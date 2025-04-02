@@ -1,0 +1,17 @@
+.layout-control {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .layout-control label {
+    margin-right: 8px;
+    font-weight: 500;
+  }
+  
+  .layout-control input {
+    width: 60px;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
