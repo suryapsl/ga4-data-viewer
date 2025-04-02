@@ -7,7 +7,7 @@ const LayoutControl = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-    if (value >= 1 && value <= 6) {
+    if (value >= 1 && value <= 20) {
       updateCardsPerRow(value);
     }
   };
