@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite build && pm2 start --name \"vite-app\" --interpreter \"/Users/localadmin/.nvm/versions/node/v18.20.5/bin/node\" npm -- run preview -- --port 9994 --host"
   },
   "dependencies": {
     "react": "^19.0.0",

@@ -26,7 +26,7 @@ function App() {
           
           <footer className="footer">
             <div className="container">
-              <p>© {new Date().getFullYear()} JSON Card Viewer</p>
+              <p>© {new Date().getFullYear()} PSL GA4 Analysis</p>
             </div>
           </footer>
         </div>
