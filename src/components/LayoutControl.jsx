@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLayout } from '../context/LayoutContext';
 import './LayoutControl.css';
 
 const LayoutControl = () => {
   const { cardsPerRow, updateCardsPerRow } = useLayout();
+  const [count, setCount] = useState(cardsPerRow);
 
   const handleChange = (e) => {
     const value = e.target.value;
+    setCount(value);
     if (value >= 1 && value <= 20) {
       updateCardsPerRow(value);
     }
@@ -20,7 +22,7 @@ const LayoutControl = () => {
         type="number"
         min="1"
         max="20"
-        value={cardsPerRow}
+        value={count}
         onChange={handleChange}
       />
     </div>

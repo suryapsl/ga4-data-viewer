@@ -20,7 +20,9 @@ const ItemCard = ({ item, isParent, onClick }) => {
         imageUrl: item.clicked_image_url,
         category: item.item_category2,
         selectCount: item.select_item_count,
-        index: item.clicked_item_index
+        index: item.clicked_item_index,
+        addToCartCount: item.add_to_cart_count,
+        purchaseCount: item.purchase_count
       };
 
   return (
@@ -54,6 +56,8 @@ const ItemCard = ({ item, isParent, onClick }) => {
             <p className="select-count">Total Clicks: {cardData.selectCount}</p>
             <p className="truncate">ID: {cardData.id}</p>
             <p>Index: {cardData.index}</p>
+            <p>Add To Cart Count : {cardData.addToCartCount}</p>
+            <p>Purchase Count : {cardData.purchaseCount}</p>
           </div>
         )}
       </div>
