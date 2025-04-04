@@ -153,7 +153,8 @@ const CategoryPage = () => {
         </div>
       </div>
 
-      {Object.keys(categoryGroups).map(category => (
+      {/* {Object.keys(categoryGroups).map(category => ( */}
+      {['more from brand', 'similar products'].map(category => (
         <div key={category} style={{ marginBottom: '40px' }}>
           <h2 className="category-title">{category}</h2>
           <Slider {...carouselSettings}>

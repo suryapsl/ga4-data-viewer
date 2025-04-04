@@ -19,6 +19,9 @@ export const processData = (jsonData) => {
       // Group children by item_category2
       const groupedByCategory = parentItems.reduce((catAcc, item) => {
         const category = item.item_category2;
+        if(category !== 'similar products' && category !== 'more from brand') {
+          return catAcc;
+        }
         if (!catAcc[category]) {
           catAcc[category] = [];
         }
