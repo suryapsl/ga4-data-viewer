@@ -7,10 +7,10 @@ export function useLayout() {
 }
 
 export function LayoutProvider({ children }) {
-  const [cardsPerRow, setCardsPerRow] = useState(4);
+  const [cardsPerRow, setCardsPerRow] = useState(6);
 
   const updateCardsPerRow = (count) => {
-    setCardsPerRow(parseInt(count) || 4); // Default to 4 if parsing fails
+    setCardsPerRow(parseInt(count) || 6); // Default to 4 if parsing fails
   };
 
   return (
