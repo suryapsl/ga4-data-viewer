@@ -12,6 +12,26 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { scrollOnHtmlFast } from '../utils';
 
+const getNextParentRank = (parentRank, groupedData) => {
+  const parentRanks = Object.keys(groupedData).map(key => Number(key));
+  parentRanks.sort((a,b) => a - b);
+  for(const nextRank of parentRanks) {
+    if(parentRank < nextRank) {
+      return nextRank;
+    }
+  }
+}
+
+const getPreviousParentRank = (parentRank, groupedData) => {
+  const parentRanks = Object.keys(groupedData).map(key => Number(key));
+  parentRanks.sort((a,b) => b - a);
+  for(const previousRank of parentRanks) {
+    if(parentRank > previousRank) {
+      return previousRank;
+    }
+  }
+}
+
 const CategoryPage = () => {
   const { parentRank, parentId } = useParams();
   const [categoryGroups, setCategoryGroups] = useState({});
@@ -27,13 +47,11 @@ const CategoryPage = () => {
     const groupedData = processData(jsonData);
 
     if (groupedData[parentRank]) {
-      setCategoryGroups(groupedData[parentRank].categories);
-      setParentInfo(groupedData[parentRank].parentInfo);
+      setCategoryGroups(groupedData[parentRank]?.categories);
+      setParentInfo(groupedData[parentRank]?.parentInfo);
 
-      const nextParentRank =
-        parentRank > 0 && parentRank < 100 ? Number(parentRank) + 1 : null;
-      const previousParentRank =
-        parentRank > 1 && parentRank < 101 ? Number(parentRank) - 1 : null;
+      const nextParentRank = getNextParentRank(parentRank, groupedData);
+      const previousParentRank = getPreviousParentRank(parentRank, groupedData);
       const siblingParents = {};
       if (nextParentRank) {
         const { parentInfo } = groupedData[nextParentRank];
