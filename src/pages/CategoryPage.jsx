@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
 import LayoutControl from '../components/LayoutControl';
 import { processData } from '../utils/dataProcessor';
@@ -10,6 +10,7 @@ import './Pages.css';
 // Import slick carousel CSS
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { scrollOnHtmlFast } from '../utils';
 
 const CategoryPage = () => {
   const { parentRank, parentId } = useParams();
@@ -21,10 +22,7 @@ const CategoryPage = () => {
   const { cardsPerRow } = useLayout();
 
   useEffect(() => {
-    console.log('inside the onMount of CategoryPage')
-  }, [])
-
-  useEffect(() => {
+    scrollOnHtmlFast(0);
     // Process the data
     const groupedData = processData(jsonData);
 
@@ -137,7 +135,9 @@ const CategoryPage = () => {
             />
           </div>
           <div className="parent-info">
-            <h1>{parentInfo.parent_item_name}</h1>
+            <Link to={parentInfo.page_location.split('?')[0]} target="_blank">
+              <h1>{parentInfo.parent_item_name}</h1>
+            </Link>
             <p className="card-brand">{parentInfo.parent_item_brand}</p>
             <p className="card-price">
               ₹{Number(parentInfo.parent_price).toLocaleString()}
@@ -148,6 +148,7 @@ const CategoryPage = () => {
             </p>
           </div>
         </div>
+
         <div className="layout-controls-container">
           <LayoutControl />
         </div>
