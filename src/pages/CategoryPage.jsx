@@ -11,6 +11,7 @@ import './Pages.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { scrollOnHtmlFast } from '../utils';
+import { getItemCardData } from '../utils';
 
 const getNextParentRank = (parentRank, groupedData) => {
   const parentRanks = Object.keys(groupedData).map(key => Number(key));
@@ -181,7 +182,7 @@ const CategoryPage = () => {
               <div key={item.clicked_item_id} className="carousel-item-wrapper">
                 <ItemCard
                   key={item.clicked_item_id}
-                  item={item}
+                  item={getItemCardData(item, 'top-viewed-detail-carousel')}
                   isParent={false}
                 />
               </div>

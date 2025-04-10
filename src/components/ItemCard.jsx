@@ -1,36 +1,28 @@
 import React from 'react';
 import './ItemCard.css';
 
-const ItemCard = ({ item, isParent, onClick }) => {
-  const cardData = isParent 
-    ? {
-        id: item.parent_item_id,
-        name: item.parent_item_name,
-        brand: item.parent_item_brand,
-        price: item.parent_price,
-        imageUrl: item.parent_image_url,
-        rank: item.parent_rank,
-        viewCount: item.parent_view_count
-      }
-    : {
-        id: item.clicked_item_id,
-        name: item.clicked_item_name,
-        brand: item.clicked_item_brand,
-        price: item.clicked_item_price,
-        imageUrl: item.clicked_image_url,
-        category: item.item_category2,
-        selectCount: item.select_item_count,
-        index: item.clicked_item_index,
-        addToCartCount: item.add_to_cart_count,
-        purchaseCount: item.purchase_count
-      };
+const ItemCard = ({ item, onClick }) => {
+  const {
+    id,
+    name,
+    brand,
+    price,
+    imageUrl,
+    rank,
+    viewCount,
+    category,
+    selectCount,
+    index,
+    addToCartCount,
+    purchaseCount
+  } = item;
 
   return (
     <div className="card" onClick={onClick}>
       <div className="card-image">
         <img 
-          src={cardData.imageUrl} 
-          alt={cardData.name}
+          src={imageUrl} 
+          alt={name}
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Available';
@@ -38,28 +30,23 @@ const ItemCard = ({ item, isParent, onClick }) => {
         />
       </div>
       <div className="card-content">
-        <h3 className="card-title">{cardData.name}</h3>
-        <p className="card-brand">{cardData.brand}</p>
-        <p className="card-price">₹{Number(cardData.price).toLocaleString()}</p>
+        {name && <h3 className="card-title">{name}</h3>}
+        {brand && <p className="card-brand">{brand}</p>}
+        {price && <p className="card-price">₹{Number(price).toLocaleString()}</p>}
         
-        {isParent && (
-          <div className="card-meta">
-            <p>Rank: {cardData.rank}</p>
-            <p>Views: {cardData.viewCount}</p>
-            <p className="truncate">ID: {cardData.id}</p>
-          </div>
-        )}
+        <div className="card-meta">
+          {rank && <p>Rank: {rank}</p>}
+          {viewCount && <p>Views: {viewCount}</p>}
+        </div>
         
-        {!isParent && (
-          <div className="card-meta">
-            <p>Category: {cardData.category}</p>
-            <p className="select-count">Total Clicks: {cardData.selectCount}</p>
-            <p className="truncate">ID: {cardData.id}</p>
-            <p>Index: {cardData.index}</p>
-            <p>Add To Cart Count : {cardData.addToCartCount}</p>
-            <p>Purchase Count : {cardData.purchaseCount}</p>
-          </div>
-        )}
+        <div className="card-meta">
+          {category && <p>Category: {category}</p>}
+          {selectCount && <p className="select-count">Total Clicks: {selectCount}</p>}
+          {id && <p className="truncate">ID: {id}</p>}
+          {index && <p>Index: {index}</p>}
+          {addToCartCount && <p>Add To Cart Count : {addToCartCount}</p>}
+          {purchaseCount && <p>Purchase Count : {purchaseCount}</p>}
+        </div>
       </div>
     </div>
   );

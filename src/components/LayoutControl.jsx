@@ -6,7 +6,7 @@ const LayoutControl = () => {
   const { cardsPerRow, updateCardsPerRow } = useLayout();
   const [count, setCount] = useState(cardsPerRow);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const value = e.target.value;
     setCount(value);
     if (value >= 1 && value <= 20) {

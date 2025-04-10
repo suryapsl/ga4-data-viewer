@@ -5,24 +5,81 @@ import LayoutControl from '../components/LayoutControl';
 import { processData } from '../utils/dataProcessor';
 import { useLayout } from '../context/LayoutContext';
 import jsonData from '../data.json';
+import purchasesFromCarousel from '../purchasesFromCarousel.json';
+import { getItemCardData } from '../utils';
 import './Pages.css';
 
+const getTopViewedItems = () => {
+  const groupedData = processData(jsonData);
+  return Object.keys(groupedData).map(parentRank => {
+    return groupedData[parentRank].parentInfo;
+  })
+}
+
+export const availableDatasets = [
+  {
+    id: 'top-viewed',
+    name: 'Top 100 Viewed Products',
+    data: getTopViewedItems(),
+  },
+  {
+    id: 'more-from-brand',
+    name: 'Top Purchases from More-From-Brand',
+    data: purchasesFromCarousel.filter(
+      event => event.sold_item_category2 == 'more from brand'
+    ),
+  },
+  {
+    id: 'similar-products',
+    name: 'Top Purchases from Similar-Products',
+    data: purchasesFromCarousel.filter(
+      event => event.sold_item_category2 == 'similar products'
+    ),
+  },
+];
+
+const DatasetSelector = ({currentDataset, setCurrentDataset }) => {
+  
+  return (
+    <div className="dataset-selector">
+      <select
+        value={currentDataset.id}
+        onChange={e => {
+          setCurrentDataset(availableDatasets.find(dataSet => dataSet.id === e.target.value));
+        }}
+      >
+        {availableDatasets.map(dataset => (
+          <option key={dataset.id} value={dataset.id}>
+            {dataset.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
 const ParentPage = () => {
-  const [groupedData, setGroupedData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [currentDataset, setCurrentDataset] = useState(() => {
+    const datasetId= sessionStorage.getItem('dataset-id');
+    return availableDatasets.find(dataset => dataset.id === datasetId ) || availableDatasets[0];
+  });
   const navigate = useNavigate();
   const { cardsPerRow } = useLayout();
-
-  useEffect(() => {
-    // Process the data
-    const processed = processData(jsonData);
-    setGroupedData(processed);
-    setLoading(false);
-  }, []);
+  const routeParam1 = currentDataset.id;
 
   const handleCardClick = (parentRank, parentId) => {
-    navigate(`/category/${parentRank}/${parentId}`);
+    navigate(`/${routeParam1}/${parentRank}/${parentId}`);
   };
+
+  const onDatasetChange = (dataset) => {
+    setCurrentDataset(dataset);
+    sessionStorage.setItem('dataset-id', dataset.id)
+  }
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -31,19 +88,25 @@ const ParentPage = () => {
   return (
     <div className="container">
       <div className="page-header">
-        <h1 className="page-title">Parent Items</h1>
-        <LayoutControl />
+        <h1 className="page-title">Items</h1>
+        <DatasetSelector setCurrentDataset={onDatasetChange} currentDataset={currentDataset} />
       </div>
-      
-      <div className="card-grid" style={{ gridTemplateColumns: `repeat(${cardsPerRow}, 1fr)` }}>
-        {Object.keys(groupedData).map(parentRank => {
-          const { parentInfo } = groupedData[parentRank];
+      <LayoutControl />
+
+      <div
+        className="card-grid"
+        style={{ gridTemplateColumns: `repeat(${cardsPerRow}, 1fr)` }}
+      >
+        {currentDataset.data.map(data => {
+          const item = getItemCardData(data, currentDataset.id);
           return (
-            <ItemCard 
-              key={parentInfo.parent_item_id}
-              item={parentInfo}
+            <ItemCard
+              key={item.id}
+              item={item}
               isParent={true}
-              onClick={() => handleCardClick(parentRank, parentInfo.parent_item_id)}
+              onClick={() =>
+                handleCardClick(item.rank, item.id)
+              }
             />
           );
         })}
