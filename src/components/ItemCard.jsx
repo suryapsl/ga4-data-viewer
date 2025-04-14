@@ -23,10 +23,10 @@ const ItemCard = ({ item, onClick }) => {
         <img 
           src={imageUrl} 
           alt={name}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Available';
-          }}
+          // onError={(e) => {
+          //   e.target.onerror = null;
+          //   e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Available';
+          // }}
         />
       </div>
       <div className="card-content">

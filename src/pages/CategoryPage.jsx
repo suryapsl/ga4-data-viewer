@@ -5,7 +5,8 @@ import LayoutControl from '../components/LayoutControl';
 import { processData } from '../utils/dataProcessor';
 import { useLayout } from '../context/LayoutContext';
 import Slider from 'react-slick';
-import jsonData from '../data.json';
+import jsonData1 from '../data.json';
+import jsonData2 from '../top100ViewAll-8To130425.json';
 import './Pages.css';
 // Import slick carousel CSS
 import 'slick-carousel/slick/slick.css';
@@ -34,13 +35,14 @@ const getPreviousParentRank = (parentRank, groupedData) => {
 }
 
 const CategoryPage = () => {
-  const { parentRank, parentId } = useParams();
+  const { category, parentRank, parentId } = useParams();
   const [categoryGroups, setCategoryGroups] = useState({});
   const [parentInfo, setParentInfo] = useState(null);
   const [siblingParentInfo, setSiblingParentInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { cardsPerRow } = useLayout();
+  const jsonData = category === 'top-viewed' ? jsonData1 : jsonData2;
 
   useEffect(() => {
     scrollOnHtmlFast(0);
@@ -126,7 +128,7 @@ const CategoryPage = () => {
             <button
               onClick={() =>
                 navigate(
-                  `/category/${previousParent.rank}/${previousParent.id}`
+                  `/${category}/${previousParent.rank}/${previousParent.id}`
                 )
               }
               className="previous-button"
@@ -137,7 +139,7 @@ const CategoryPage = () => {
           {nextParent && (
             <button
               onClick={() =>
-                navigate(`/category/${nextParent.rank}/${nextParent.id}`)
+                navigate(`/${category}/${nextParent.rank}/${nextParent.id}`)
               }
               className="next-button"
             >
@@ -165,6 +167,7 @@ const CategoryPage = () => {
               Rank: {parentInfo.parent_rank} • Views:{' '}
               {parentInfo.parent_view_count}
             </p>
+            <p className='card-meta'>Parent Id: {parentInfo.parent_item_id}</p>
           </div>
         </div>
 

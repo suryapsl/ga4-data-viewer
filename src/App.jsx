@@ -21,9 +21,9 @@ function App() {
           <main style={{padding: '32px 0'}}>
             <Routes>
               <Route path="/" element={<ParentPage />}  />
-              <Route path="/top-viewed/:parentRank/:parentId" element={<CategoryPage />} />
               <Route path="/more-from-brand/:parentRank/:parentId" element={<PurchaseDetailsPage pageType='more-from-brand'/>} />
               <Route path="/similar-products/:parentRank/:parentId" element={<PurchaseDetailsPage pageType='similar-products' />} />
+              <Route path="/:category/:parentRank/:parentId" element={<CategoryPage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>

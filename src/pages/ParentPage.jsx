@@ -5,11 +5,12 @@ import LayoutControl from '../components/LayoutControl';
 import { processData } from '../utils/dataProcessor';
 import { useLayout } from '../context/LayoutContext';
 import jsonData from '../data.json';
+import jsonData2 from '../top100ViewAll-8To130425.json';
 import purchasesFromCarousel from '../purchasesFromCarousel.json';
 import { getItemCardData } from '../utils';
 import './Pages.css';
 
-const getTopViewedItems = () => {
+const getTopViewedItems = (jsonData) => {
   const groupedData = processData(jsonData);
   return Object.keys(groupedData).map(parentRank => {
     return groupedData[parentRank].parentInfo;
@@ -20,7 +21,12 @@ export const availableDatasets = [
   {
     id: 'top-viewed',
     name: 'Top 100 Viewed Products',
-    data: getTopViewedItems(),
+    data: getTopViewedItems(jsonData),
+  },
+  {
+    id: 'top-viewed-8-13-april',
+    name: 'Top 100 Viewed Products, 8-13 April 2025',
+    data: getTopViewedItems(jsonData2),
   },
   {
     id: 'more-from-brand',
