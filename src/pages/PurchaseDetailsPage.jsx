@@ -210,7 +210,7 @@ const PurchaseDetailsPage = ({ pageType }) => {
   const navigate = useNavigate();
   const currentDataset = availableDatasets.find(
     dataset => dataset.id === pageType
-  ).data;
+  ).parentData;
   const purchaseData = currentDataset.find(
     detail => detail.sold_item_id == parentId
   );

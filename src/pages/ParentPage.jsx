@@ -2,64 +2,94 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
 import LayoutControl from '../components/LayoutControl';
-import { processData } from '../utils/dataProcessor';
 import { useLayout } from '../context/LayoutContext';
-import jsonData from '../data.json';
-import jsonData2 from '../top100ViewAll-8To130425.json';
+import topViewedDesktop from '../topViewAll1000Desktop.json';
+import topViewedMobile from '../topViewAll1000Mobile.json';
+import topViewedAll from '../topViewAll.json';
+import topViewed8To13April25 from '../top100ViewAll-8To13April25.json';
 import purchasesFromCarousel from '../purchasesFromCarousel.json';
 import { getItemCardData } from '../utils';
 import './Pages.css';
+import Tooltip from '../components/Tooltip';
 
-const getTopViewedItems = (jsonData) => {
-  const groupedData = processData(jsonData);
-  return Object.keys(groupedData).map(parentRank => {
-    return groupedData[parentRank].parentInfo;
-  })
-}
+const getTopViewedParentItems = jsonData => {
+  return Object.keys(jsonData).map(parentRank => {
+    return jsonData[parentRank].parentInfo;
+  });
+};
 
 export const availableDatasets = [
   {
     id: 'top-viewed',
-    name: 'Top 100 Viewed Products',
-    data: getTopViewedItems(jsonData),
+    name: 'Top 1000 Viewed Products',
+    parentData: getTopViewedParentItems(topViewedAll),
+    data: topViewedAll,
+    from: '18-03-25',
+    to: '16-04-25',
+  },
+  {
+    id: 'top-viewed-desktop',
+    name: 'Top 1000 Viewed Desktop Products',
+    parentData: getTopViewedParentItems(topViewedDesktop),
+    data: topViewedDesktop,
+    from: '18-03-25',
+    to: '14-04-25',
+  },
+  {
+    id: 'top-viewed-mobile',
+    name: 'Top 1000 Viewed Mobile Products',
+    parentData: getTopViewedParentItems(topViewedMobile),
+    data: topViewedMobile,
+    from: '18-03-25',
+    to: '14-04-25',
   },
   {
     id: 'top-viewed-8-13-april',
     name: 'Top 100 Viewed Products, 8-13 April 2025',
-    data: getTopViewedItems(jsonData2),
+    parentData: getTopViewedParentItems(topViewed8To13April25),
+    data: topViewed8To13April25,
+    from: '8-04-25',
+    to: '13-04-25',
   },
   {
     id: 'more-from-brand',
     name: 'Top Purchases from More-From-Brand',
-    data: purchasesFromCarousel.filter(
+    parentData: purchasesFromCarousel.filter(
       event => event.sold_item_category2 == 'more from brand'
     ),
   },
   {
     id: 'similar-products',
     name: 'Top Purchases from Similar-Products',
-    data: purchasesFromCarousel.filter(
+    parentData: purchasesFromCarousel.filter(
       event => event.sold_item_category2 == 'similar products'
     ),
   },
 ];
 
-const DatasetSelector = ({currentDataset, setCurrentDataset }) => {
-  
+const DatasetSelector = ({ currentDataset, setCurrentDataset }) => {
   return (
     <div className="dataset-selector">
-      <select
-        value={currentDataset.id}
-        onChange={e => {
-          setCurrentDataset(availableDatasets.find(dataSet => dataSet.id === e.target.value));
-        }}
-      >
-        {availableDatasets.map(dataset => (
-          <option key={dataset.id} value={dataset.id}>
-            {dataset.name}
-          </option>
-        ))}
-      </select>
+      <div className="flex justify-center">
+        {currentDataset.from && <Tooltip
+          text={`From: ${currentDataset.from} — To: ${currentDataset.to}`}
+        />}
+        <select
+          value={currentDataset.id}
+          onChange={e => {
+            setCurrentDataset(
+              availableDatasets.find(dataSet => dataSet.id === e.target.value)
+            );
+          }}
+          className='block w-full ml-1 border border-gray-300 rounded-md shadow-sm focus:border-gray-300 focus:ring-0'
+        >
+          {availableDatasets.map(dataset => (
+            <option key={dataset.id} value={dataset.id}>
+              {dataset.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 };
@@ -67,8 +97,11 @@ const DatasetSelector = ({currentDataset, setCurrentDataset }) => {
 const ParentPage = () => {
   const [loading, setLoading] = useState(true);
   const [currentDataset, setCurrentDataset] = useState(() => {
-    const datasetId= sessionStorage.getItem('dataset-id');
-    return availableDatasets.find(dataset => dataset.id === datasetId ) || availableDatasets[0];
+    const datasetId = sessionStorage.getItem('dataset-id');
+    return (
+      availableDatasets.find(dataset => dataset.id === datasetId) ||
+      availableDatasets[0]
+    );
   });
   const navigate = useNavigate();
   const { cardsPerRow } = useLayout();
@@ -78,10 +111,10 @@ const ParentPage = () => {
     navigate(`/${routeParam1}/${parentRank}/${parentId}`);
   };
 
-  const onDatasetChange = (dataset) => {
+  const onDatasetChange = dataset => {
     setCurrentDataset(dataset);
-    sessionStorage.setItem('dataset-id', dataset.id)
-  }
+    sessionStorage.setItem('dataset-id', dataset.id);
+  };
 
   useEffect(() => {
     setLoading(false);
@@ -95,7 +128,10 @@ const ParentPage = () => {
     <div className="container">
       <div className="page-header">
         <h1 className="page-title">Items</h1>
-        <DatasetSelector setCurrentDataset={onDatasetChange} currentDataset={currentDataset} />
+        <DatasetSelector
+          setCurrentDataset={onDatasetChange}
+          currentDataset={currentDataset}
+        />
       </div>
       <LayoutControl />
 
@@ -103,16 +139,14 @@ const ParentPage = () => {
         className="card-grid"
         style={{ gridTemplateColumns: `repeat(${cardsPerRow}, 1fr)` }}
       >
-        {currentDataset.data.map(data => {
+        {currentDataset.parentData.map((data, index) => {
           const item = getItemCardData(data, currentDataset.id);
           return (
             <ItemCard
-              key={item.id}
+              key={`${item.id}_${index}`}
               item={item}
               isParent={true}
-              onClick={() =>
-                handleCardClick(item.rank, item.id)
-              }
+              onClick={() => handleCardClick(item.rank, item.id)}
             />
           );
         })}

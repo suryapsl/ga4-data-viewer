@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import ItemCard from '../components/ItemCard';
 import LayoutControl from '../components/LayoutControl';
-import { processData } from '../utils/dataProcessor';
 import { useLayout } from '../context/LayoutContext';
 import Slider from 'react-slick';
-import jsonData1 from '../data.json';
-import jsonData2 from '../top100ViewAll-8To130425.json';
 import './Pages.css';
 // Import slick carousel CSS
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { scrollOnHtmlFast } from '../utils';
 import { getItemCardData } from '../utils';
+import { availableDatasets } from './ParentPage';
 
 const getNextParentRank = (parentRank, groupedData) => {
   const parentRanks = Object.keys(groupedData).map(key => Number(key));
@@ -42,13 +40,15 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { cardsPerRow } = useLayout();
-  const jsonData = category === 'top-viewed' ? jsonData1 : jsonData2;
+  let dataset = availableDatasets.find(dataset => dataset.id === category);
+  if(!dataset) {
+    dataset = availableDatasets[0];
+  }
 
   useEffect(() => {
     scrollOnHtmlFast(0);
     // Process the data
-    const groupedData = processData(jsonData);
-
+    const groupedData = dataset.data; // processData(jsonData);
     if (groupedData[parentRank]) {
       setCategoryGroups(groupedData[parentRank]?.categories);
       setParentInfo(groupedData[parentRank]?.parentInfo);

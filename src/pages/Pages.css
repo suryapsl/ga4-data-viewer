@@ -158,6 +158,10 @@
   padding: 0 10px;
 }
 
+.dataset-duration {
+  font-size: 14px;
+}
+
 /* Override some slick-carousel defaults */
 
 @media (min-width: 768px) {
