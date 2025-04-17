@@ -181,7 +181,7 @@ const CategoryPage = () => {
         <div key={category} style={{ marginBottom: '40px' }}>
           <h2 className="category-title">{category}</h2>
           <Slider {...carouselSettings}>
-            {categoryGroups[category].map(item => (
+            {categoryGroups[category]?.map(item => (
               <div key={item.clicked_item_id} className="carousel-item-wrapper">
                 <ItemCard
                   key={item.clicked_item_id}
